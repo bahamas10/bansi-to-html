@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+#
+# Very simple file style checker.  Checks include:
+#
+# - No lines are over 80 characters.
+# - No 2 or more consecutive newlines.
+#
+# Author: Dave Eddy <dave@daveeddy.com>
+# Date: May 21, 2021
+# License: MIT
+
+# colors
+if [[ -t 1 ]]; then
+	RED=$'\e[31m'
+	BLD=$'\e[1m'
+	RST=$'\e[0m'
+else
+	RED=
+	BLD=
+	RST=
+fi
+
+# exit code
+code=0
+
+# check for lines greater than 80 columns
+# shellcheck disable=SC2317
+exceeds-line-length() {
+	local file=$1
+	local columns=80
+
+	expand "$file" | awk "-vcols=$columns" '
+	BEGIN {
+		code = 0;
+	}
+	length($0) > cols {
+		printf("%4-d %s\n", NR, $0);
+		code = 1;
+	}
+	END {
+		exit(code);
+	}
+	'
+}
+
+# check for consecutive newlines
+# shellcheck disable=SC2317
+blank-lines() {
+	local file=$1
+
+	awk '
+	BEGIN {
+		code = 0;
+		newlines = 0;
+	}
+	/^$/ {
+		newlines++;
+		if (newlines == 2) {
+			printf("%-4d extra newline(s)\n", NR);
+			code = 1;
+		}
+	}
+	/^.+$/ {
+		newlines = 0;
+	}
+	END {
+		exit(code);
+	}
+	' "$file"
+}
+
+# run a test against a file
+#
+# usage: run-test <test-name> <file> <failure message>
+#
+# ex: run-test consistent-tabs src/sshp.c 'bad tab usage'
+#
+run-test() {
+	local test=$1
+	local file=$2
+	local msg=$3
+	local output
+
+	if ! output=$("$test" "$file" 2>&1); then
+		code=1
+		echo
+		echo "${RED}error:  $msg$RST"
+		echo "$output"
+		echo
+	fi
+}
+
+# loop each argument and run tests
+for f in "$@"; do
+	echo "${BLD}checking:$RST  $f"
+
+	run-test blank-lines "$f" 'consective blank lines'
+	run-test exceeds-line-length "$f" 'lines over 80 columns'
+done
+
+exit "$code"

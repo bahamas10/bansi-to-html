@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#
+# Remake test files - this will (re)create HTML files for the given input files
+# in the valid test cases.
+#
+# Author: Dave Eddy <dave@daveeddy.com>
+# Date: June 07, 2025
+# License: MIT
+
+dir='./cases/valid'
+for f in "$dir"/*.input; do
+	name=${f##*/}
+	name=${name%.input}
+	expected=$dir/$name.expected
+
+	echo -n "generating $expected... "
+	if ../bansi-to-html -H "$f" > "$expected"; then
+		echo ok
+	else
+		echo fail!
+		exit 1
+	fi
+done

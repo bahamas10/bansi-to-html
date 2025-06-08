@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+#
+# Simple test runner for bansi-to-html
+#
+# Author: Dave Eddy <dave@daveeddy.com>
+# Date: June 07, 2025
+# License: MIT
+
+mkdir -p tmp
+tmp='tmp/output.tmp'
+
+# colors
+if [[ -t 1 ]]; then
+	RED=$'\e[31m'
+	BLD=$'\e[1m'
+	RST=$'\e[0m'
+else
+	RED=
+	BLD=
+	RST=
+fi
+
+# test valid cases
+dir='./cases/valid'
+code=0
+echo 'Testing valid cases'
+for f in "$dir"/*.input; do
+	name=${f##*/}
+	name=${name%.input}
+	expected=$dir/$name.expected
+
+	echo -n "${BLD}testing:${RST}  $name... "
+
+	if ! ../bansi-to-html -H "$f" > "$tmp"; then
+		echo "${RED}failed to generate HTML${RST}"
+		code=1
+		continue
+	fi
+
+	if diff -u "$expected" "$tmp"; then
+		echo ok
+	else
+		echo "${RED}fail!${RST}"
+		code=1
+	fi
+done
+echo
+
+# test invalid cases
+dir='./cases/invalid'
+echo 'Testing invalid cases'
+for f in "$dir"/*.input; do
+	name=${f##*/}
+	name=${name%.input}
+
+	echo -n "${BLD}testing:${RST}  $name... "
+
+	if ! ../bansi-to-html -H "$f" > /dev/null 2>&1; then
+		echo ok
+	else
+		echo "${RED}fail!${RST}"
+		code=1
+	fi
+done
+
+exit "$code"
