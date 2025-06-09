@@ -49,34 +49,33 @@ Usage
 
 ```
 $ bansi-to-html -h
-
-Usage: bansi-to-html [-hdw] [-p prefix] [file]
+Usage: bansi-to-html [-hdwH] [-p prefix] [file]
 
 Convert ANSI to HTML purely in Bash.
 
-This program will read a file passed as the first argument or from stdin
-if no argument is given.  ANSI escape sequences for color output will be
-processed and turned into their relevant CSS classes in <span>
-elements.  No extraneous newlines or processing will be done on the
-input - so the output should be safe to put in your own
-<pre><code>...</code></pre> block and have it appear exactly as it
-should.
+This program will read a file passed as the first argument or from stdin if no
+argument is given.  ANSI escape sequences for color output will be processed and
+turned into their relevant CSS classes in <span> elements.  No extraneous
+newlines or processing will be done on the input - so the output should be safe
+to put in your own <pre><code>...</code></pre> block and have it appear exactly
+as it should.
 
-Any unexpected, unsupported, or broken escape sequences will be
-considered an error and will cause this program to halt immediately with
-an error exit status.  The '-w' flag can be given to tell this program
-to ignore those warnings and just discard the unknown sequences
-(warnings will be emitted to stderr).
-
-Options
-  -h             Print this message and exit.
-  -d             Print debug message to stderr.
-  -p <prefix>    CSS class prefix to use, defaults to "ansi-".
-  -w             Ignore unsupported sequences, just emit a warning to
-                 stderr and keep running.
-  -v             Print the version number and exit.
+Any unexpected, unsupported, or broken escape sequences will be considered an
+error and will cause this program to halt immediately with an error exit status.
+The '-w' flag can be given to tell this program to ignore those warnings and
+just discard the unknown sequences (warnings will be emitted to stderr).
 
 Source code: https://github.com/bahamas10/bansi-to-html
+
+Options
+  -d             Print debug message to stderr.
+  -h             Print this message and exit.
+  -H             Don't emit HTML program header comment.
+  -p <prefix>    CSS class prefix to use, defaults to "ansi-" - used directly in
+                 the HTML so make sure it is HTML safe.
+  -w             Ignore unsupported sequences, just emit a warning to stderr and
+                 keep running.
+  -v             Print the version number and exit.
 ```
 
 Contributing Guidelines
