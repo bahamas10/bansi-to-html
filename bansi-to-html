@@ -33,14 +33,12 @@ just discard the unknown sequences (warnings will be emitted to stderr).
 Source code: $PROG_SOURCE
 
 Options
-  -d             Print debug message to stderr.
-  -h             Print this message and exit.
-  -H             Don't emit HTML program header comment.
-  -p <prefix>    CSS class prefix to use, defaults to "ansi-" - used directly in
-                 the HTML so make sure it is HTML safe.
-  -w             Ignore unsupported sequences, just emit a warning to stderr and
-                 keep running.
-  -v             Print the version number and exit.
+    -d           Print debug message to stderr
+    -h           Print this message and exit
+    -H           Don't emit HTML program header comment
+    -p <prefix>  CSS class prefix to use, defaults to "ansi-", must be HTML safe
+    -w           Ignore unsupported sequences
+    -v           Print the version number and exit
 EOF
 
 # don't try to handle unicode or anything other than raw bytes as best we can
